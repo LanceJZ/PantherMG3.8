@@ -37,7 +37,7 @@ namespace MonoGame38Test
             Content.RootDirectory = "Content";
             // Positive Y is Up. Positive X is Right.
 
-            Helper.Initialize(this, _graphics);
+            Core.Initialize(this, _graphics);
 
             // Screen resolution is 1200 X 900.
             // Y positive is Up.
@@ -66,8 +66,8 @@ namespace MonoGame38Test
         protected override void Initialize()
         {
             // Setup lighting.
-            Helper.ScreenHeight = (uint)_graphics.PreferredBackBufferHeight;
-            Helper.SreenWidth = (uint)_graphics.PreferredBackBufferWidth;
+            Core.ScreenHeight = (uint)_graphics.PreferredBackBufferHeight;
+            Core.SreenWidth = (uint)_graphics.PreferredBackBufferWidth;
 
             base.Initialize();
         }

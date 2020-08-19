@@ -32,7 +32,7 @@ namespace Panther
 
         public void LoadContent()
         {
-            Cube = Helper.LoadModel("Core/Cube");
+            Cube = Core.LoadModel("Core/Cube");
             Enabled = false;
         }
 
@@ -58,7 +58,7 @@ namespace Panther
             Enabled = true;
             Position = position;
             Radius = radius;
-            int count = Helper.RandomMinMax(minCount, (int)(minCount + radius * 10));
+            int count = Core.RandomMinMax(minCount, (int)(minCount + radius * 10));
 
             if (count > Particles.Count)
             {
@@ -89,8 +89,8 @@ namespace Panther
         void SpawnParticle(SmokeParticle particle)
         {
             Vector3 position = Position;
-            position += new Vector3(Helper.RandomMinMax(-Radius, Radius),
-                Helper.RandomMinMax(-Radius, Radius), 0);
+            position += new Vector3(Core.RandomMinMax(-Radius, Radius),
+                Core.RandomMinMax(-Radius, Radius), 0);
             particle.Spawn(position);
         }
     }

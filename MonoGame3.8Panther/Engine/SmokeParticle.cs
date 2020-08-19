@@ -29,12 +29,12 @@ namespace Panther
 
         public void Spawn(Vector3 position, float size, float drift, float speed, float life)
         {
-            Scale = Helper.RandomMinMax(size / 2, size);
-            LifeTimer.Reset(Helper.RandomMinMax(life / 10, life));
+            Scale = Core.RandomMinMax(size / 2, size);
+            LifeTimer.Reset(Core.RandomMinMax(life / 10, life));
             Vector3 velocity;
-            velocity.Y = Helper.RandomMinMax(speed / 10, speed);
-            velocity.X = Helper.RandomMinMax(-drift, drift);
-            velocity.Z = Helper.RandomMinMax(-drift, drift);
+            velocity.Y = Core.RandomMinMax(speed / 10, speed);
+            velocity.X = Core.RandomMinMax(-drift, drift);
+            velocity.Z = Core.RandomMinMax(-drift, drift);
             base.Spawn(position, velocity);
         }
     }

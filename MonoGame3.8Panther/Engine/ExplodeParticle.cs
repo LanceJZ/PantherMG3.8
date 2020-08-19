@@ -32,9 +32,9 @@ namespace Panther
         {
             base.Spawn(position);
 
-            Velocity = Helper.RandomVelocity(velocity);
-            Scale = Helper.RandomMinMax(scaleRange, 1.5f * scaleRange);
-            LifeTimer.Reset(Helper.RandomMinMax(0.1f, maxLife));
+            Velocity = Core.RandomVelocity(velocity);
+            Scale = Core.RandomMinMax(scaleRange, 1.5f * scaleRange);
+            LifeTimer.Reset(Core.RandomMinMax(0.1f, maxLife));
         }
     }
 }

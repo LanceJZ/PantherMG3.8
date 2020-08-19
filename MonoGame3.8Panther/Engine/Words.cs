@@ -37,10 +37,10 @@ namespace Panther
             {
                 char letter = (char)(i + 65);
 
-                WordXNAModels[i] = Helper.LoadModel("Core/" + letter.ToString());
+                WordXNAModels[i] = Core.LoadModel("Core/" + letter.ToString());
             }
 
-            WordXNAModels[26] = Helper.LoadModel("Core/UnderLine");
+            WordXNAModels[26] = Core.LoadModel("Core/UnderLine");
         }
 
         public void ProcessWords(string words, Vector3 locationStart, float scale)

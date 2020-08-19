@@ -27,6 +27,7 @@ namespace MonoGame38Test
         ShapeGenerater _cubeSub;
         ShapeGenerater _cubeSubSub;
         ModelEntity _box;
+        PlayerShip player;
 
         GameState _gameMode = GameState.MainMenu;
         KeyboardState _oldKeyState;
@@ -54,6 +55,8 @@ namespace MonoGame38Test
             {
                 _cubes.Add(new ShapeGenerater(Game, _camera, genCube, cubePrims));
             }
+
+            player = new PlayerShip(game, camera);
 
             game.Components.Add(this);
         }
@@ -92,10 +95,13 @@ namespace MonoGame38Test
 
             foreach(ShapeGenerater cube in _cubes)
             {
-                cube.Position = new Vector3(Helper.RandomMinMax(-250, 250), Helper.RandomMinMax(-190, 190), Helper.RandomMinMax(-350, -550));
-                cube.PO.RotationVelocity = new Vector3(Helper.RandomMinMax(-2, 2), Helper.RandomMinMax(-2, 2), Helper.RandomMinMax(-2, 2));
-                cube.DiffuseColor = new Vector3(Helper.RandomMinMax(0.05f, 0.95f), Helper.RandomMinMax(0.05f, 0.95f), Helper.RandomMinMax(0.05f, 0.95f));
+                cube.Position = new Vector3(Core.RandomMinMax(-250, 250), Core.RandomMinMax(-190, 190), Core.RandomMinMax(-350, -550));
+                cube.PO.RotationVelocity = new Vector3(Core.RandomMinMax(-2, 2), Core.RandomMinMax(-2, 2), Core.RandomMinMax(-2, 2));
+                cube.DiffuseColor = new Vector3(Core.RandomMinMax(0.05f, 0.95f), Core.RandomMinMax(0.05f, 0.95f), Core.RandomMinMax(0.05f, 0.95f));
             }
+
+            player.RotationVelocity = new Vector3(0, 0, 0.1f);
+            player.Position = new Vector3(-20, 0, 0);
         }
 
         public override void Update(GameTime gameTime)

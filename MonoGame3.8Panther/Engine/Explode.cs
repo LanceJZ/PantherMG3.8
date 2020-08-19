@@ -60,7 +60,7 @@ namespace Panther
             float scale, float life)
         {
             Enabled = true;
-            int count = Helper.RandomMinMax(minCount, (int)(minCount + radius * 2));
+            int count = Core.RandomMinMax(minCount, (int)(minCount + radius * 2));
 
             if (count > Particles.Count)
             {
@@ -74,8 +74,8 @@ namespace Panther
 
             foreach (ExplodeParticle particle in Particles)
             {
-                position += new Vector3(Helper.RandomMinMax(-radius, radius),
-                    Helper.RandomMinMax(-radius, radius), 0);
+                position += new Vector3(Core.RandomMinMax(-radius, radius),
+                    Core.RandomMinMax(-radius, radius), 0);
 
                 particle.Spawn(position, speed, scale, life);
                 particle.DiffuseColor = TheColor;

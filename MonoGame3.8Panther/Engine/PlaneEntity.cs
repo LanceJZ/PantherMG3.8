@@ -103,7 +103,7 @@ namespace Panther
 
         public Texture2D Load(string textureName)
         {
-            return Helper.LoadTexture(textureName);
+            return Core.LoadTexture(textureName);
         }
 
         void SetupPlane(float width, float height)

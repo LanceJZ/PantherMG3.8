@@ -54,7 +54,7 @@ namespace Panther
         }
         public override void Initialize()
         {
-            _effect = new BasicEffect(Helper.Graphics);
+            _effect = new BasicEffect(Core.Graphics);
             _effect.AmbientLightColor.Round();
             _effect.LightingEnabled = true;
             _effect.EnableDefaultLighting();
@@ -99,7 +99,7 @@ namespace Panther
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    Helper.Graphics.DrawUserPrimitives(PrimitiveType.TriangleList, _shape, 0, _primitiveCount);
+                    Core.Graphics.DrawUserPrimitives(PrimitiveType.TriangleList, _shape, 0, _primitiveCount);
                 }
             }
         }

@@ -39,7 +39,7 @@ namespace Panther
             string textureLv1File, string textureLv2File, string textureLv3File,
             float textureScale, float heightScale, float scale) : base(game)
         {
-            R_Graphics = Helper.Graphics;
+            R_Graphics = Core.Graphics;
             R_Camera = camera;
             R_Effect = effect;
             MapFileName = mapFileName;
@@ -77,10 +77,10 @@ namespace Panther
 
         protected override void LoadContent()
         {
-            TheTexture1 = Helper.LoadTexture(Lv1FileName);
-            TheTexture2 = Helper.LoadTexture(Lv2FileName);
-            TheTexture3 = Helper.LoadTexture(Lv3FileName);
-            HeightMap = Helper.LoadTexture(MapFileName);
+            TheTexture1 = Core.LoadTexture(Lv1FileName);
+            TheTexture2 = Core.LoadTexture(Lv2FileName);
+            TheTexture3 = Core.LoadTexture(Lv3FileName);
+            HeightMap = Core.LoadTexture(MapFileName);
         }
 
         public void BeginRun()

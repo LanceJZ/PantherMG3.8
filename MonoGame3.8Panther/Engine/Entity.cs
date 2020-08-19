@@ -81,7 +81,7 @@ namespace Panther
             }
         }
         public PositionedObject PO { get => _PO; }
-        public BasicEffect Effect { get => _effect; }
+        public BasicEffect Effect { get => _effect; set => _effect = value; }
         public Vector3 LightDirection { get => _lightDirection; set => _lightDirection = value; }
         public Vector3 AmbiantColor { get => _ambiantColor; set => _ambiantColor = value; }
         public Vector3 DiffuseColor { get => _diffuseColor; set => _diffuseColor = value; }

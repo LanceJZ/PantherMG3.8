@@ -48,7 +48,7 @@ namespace Panther
         #endregion
         protected override void LoadContent()
         {
-            Texture = Helper.LoadTexture(TextureFileName);
+            Texture = Core.LoadTexture(TextureFileName);
 
             base.LoadContent();
             BeginRun();

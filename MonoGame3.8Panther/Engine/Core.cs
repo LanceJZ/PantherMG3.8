@@ -8,7 +8,7 @@ using System;
 
 namespace Panther
 {
-    public static class Helper
+    public static class Core
     {
         #region Fields
         static GraphicsDeviceManager _graphicsDM;
@@ -52,7 +52,7 @@ namespace Panther
             _graphics = graphicsDeviceManager.GraphicsDevice;
         }
         #endregion
-        #region Helper Methods
+        #region Methods
         /// <summary>
         /// Get a random float between min and max
         /// </summary>
@@ -138,7 +138,7 @@ namespace Panther
 
         public static Vector3 RandomVelocity(float speed, float radianDirection)
         {
-            float amt = Helper.RandomMinMax(speed * 0.15f, speed);
+            float amt = Core.RandomMinMax(speed * 0.15f, speed);
             return VelocityFromAngleZ(radianDirection, amt);
         }
         /// <summary>
@@ -203,8 +203,8 @@ namespace Panther
 
         public static Vector2 RandomEdge()
         {
-            return new Vector2(Helper.WindowWidth * 0.5f,
-                Helper.RandomMinMax(-Helper.WindowHeight * 0.45f, Helper.WindowHeight * 0.45f));
+            return new Vector2(Core.WindowWidth * 0.5f,
+                Core.RandomMinMax(-Core.WindowHeight * 0.45f, Core.WindowHeight * 0.45f));
         }
         /// <summary>
         /// Aims at target using the Y ground Plane.
@@ -362,39 +362,39 @@ namespace Panther
 
         public static Vector3 CheckWindowBorders(Vector3 position, float width, float height)
         {
-            if (position.X + width > Helper.WindowWidth * 0.5f)
-                position.X = width + Helper.WindowWidth * 0.5f;
+            if (position.X + width > Core.WindowWidth * 0.5f)
+                position.X = width + Core.WindowWidth * 0.5f;
 
-            if (position.X + width < -Helper.WindowWidth * 0.5f)
-                position.X = width + -Helper.WindowWidth * 0.5f;
+            if (position.X + width < -Core.WindowWidth * 0.5f)
+                position.X = width + -Core.WindowWidth * 0.5f;
 
-            if (position.Y + height > Helper.WindowHeight * 0.5f)
-                position.Y = width - Helper.WindowHeight * 0.5f;
+            if (position.Y + height > Core.WindowHeight * 0.5f)
+                position.Y = width - Core.WindowHeight * 0.5f;
 
-            if (position.Y + height < -Helper.WindowHeight * 0.5f)
-                position.Y = width - -Helper.WindowHeight * 0.5f;
+            if (position.Y + height < -Core.WindowHeight * 0.5f)
+                position.Y = width - -Core.WindowHeight * 0.5f;
 
             return position;
         }
 
         public static Vector3 CheckWindowSideBorders(Vector3 position, float width)
         {
-            if (position.X + width > Helper.WindowWidth * 0.5f)
-                position.X = width + Helper.WindowWidth * 0.5f;
+            if (position.X + width > Core.WindowWidth * 0.5f)
+                position.X = width + Core.WindowWidth * 0.5f;
 
-            if (position.X - width < Helper.WindowWidth * 0.5f)
-                position.X = width - Helper.WindowWidth * 0.5f;
+            if (position.X - width < Core.WindowWidth * 0.5f)
+                position.X = width - Core.WindowWidth * 0.5f;
 
             return position;
         }
 
         public static Vector3 CheckWindowTopBottomBorders(Vector3 position, float height)
         {
-            if (position.Y + height > Helper.WindowHeight * 0.5f)
-                position.Y = height + Helper.WindowHeight * 0.5f;
+            if (position.Y + height > Core.WindowHeight * 0.5f)
+                position.Y = height + Core.WindowHeight * 0.5f;
 
-            if (position.Y - height < -Helper.WindowHeight * 0.5f)
-                position.Y = height - Helper.WindowHeight * 0.5f;
+            if (position.Y - height < -Core.WindowHeight * 0.5f)
+                position.Y = height - Core.WindowHeight * 0.5f;
 
             return position;
         }
@@ -488,13 +488,13 @@ namespace Panther
 
         public static float RandomRadian()
         {
-            return Helper.RandomMinMax(0, MathHelper.TwoPi);
+            return Core.RandomMinMax(0, MathHelper.TwoPi);
         }
 
         public static Vector3 RandomVelocity(float speed)
         {
             float ang = RandomRadian();
-            float amt = Helper.RandomMinMax(speed * 0.15f, speed);
+            float amt = Core.RandomMinMax(speed * 0.15f, speed);
             return VelocityFromAngleZ(ang, amt);
         }
 

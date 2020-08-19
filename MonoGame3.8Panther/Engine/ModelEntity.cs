@@ -315,7 +315,7 @@ namespace Panther
         /// <param name="modelFileName">The file name located at content/Models</param>
         public void LoadModel(string modelFileName)
         {
-            _model = Helper.LoadModel(modelFileName);
+            _model = Core.LoadModel(modelFileName);
             SetModel(_model);
         }
         /// <summary>
@@ -325,7 +325,7 @@ namespace Panther
         /// <returns></returns>
         public Model Load(string modelFileName)
         {
-            return Helper.LoadModel(modelFileName);
+            return Core.LoadModel(modelFileName);
         }
 
         public bool IsCollision(Model model1, Matrix world1, Model model2, Matrix world2)
