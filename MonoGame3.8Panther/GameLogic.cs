@@ -28,6 +28,7 @@ namespace MonoGame38Test
         ShapeGenerater _cubeSubSub;
         ModelEntity _box;
         PlayerShip player;
+        RockOne rockOne;
 
         GameState _gameMode = GameState.MainMenu;
         KeyboardState _oldKeyState;
@@ -53,10 +54,11 @@ namespace MonoGame38Test
 
             for (int i = 0; i < 1000; i++)
             {
-                _cubes.Add(new ShapeGenerater(Game, _camera, genCube, cubePrims));
+                _cubes.Add(new ShapeGenerater(Game, camera, genCube, cubePrims));
             }
 
-            player = new PlayerShip(game, camera);
+            player = new PlayerShip(Game, _camera);
+            rockOne = new RockOne(Game, _camera);
 
             game.Components.Add(this);
         }
@@ -67,6 +69,7 @@ namespace MonoGame38Test
 
             _score.Position.Y = 300;
             _score.Position.X = -125;
+
         }
 
         public void BeginRun()
@@ -100,8 +103,11 @@ namespace MonoGame38Test
                 cube.DiffuseColor = new Vector3(Core.RandomMinMax(0.05f, 0.95f), Core.RandomMinMax(0.05f, 0.95f), Core.RandomMinMax(0.05f, 0.95f));
             }
 
-            player.RotationVelocity = new Vector3(0, 0, 0.1f);
-            player.Position = new Vector3(-20, 0, 0);
+            player.RotationVelocity = new Vector3(0.5f, 0.1f, 0.25f);
+            player.Position = new Vector3(20, 0, 0);
+            //player.DiffuseColor = new Vector3(0.25f, 0.05f, 1.0f);
+            rockOne.RotationVelocity = new Vector3(0, 0, -0.1f);
+            rockOne.Position = new Vector3(15, 10, 0);
         }
 
         public override void Update(GameTime gameTime)
@@ -112,7 +118,8 @@ namespace MonoGame38Test
             {
                 if (KBS.IsKeyDown(Keys.Space))
                 {
-                    //_boxs[0].Enabled = !_boxs[0].Enabled;
+                    _cubeSubSub.Enabled = !_cubeSubSub.Enabled;
+                    _cubeSubSub.UpdateMatrix();
                 }
             }
 

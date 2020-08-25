@@ -13,17 +13,19 @@ namespace Panther
 {
     public class Vector : Entity
     {
-        Camera camera;
+        Camera theCamera;
         Matrix localMatrix;
         VertexPositionColor[] pointList;
         VertexBuffer vertexBuffer;
         RasterizerState rasterizerState;
         short[] lineListIndices;
         FileStream fileStream;
+        public float Alpha = 1;
+        bool fileLoaded;
 
         public Vector (Game game, Camera camera): base(game, camera)
         {
-            this.camera = camera;
+            theCamera = camera;
         }
 
         public override void Initialize()
@@ -37,41 +39,65 @@ namespace Panther
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            Transform();
+            if (fileLoaded)
+            {
+                base.Update(gameTime);
+                Transform();
+            }
         }
 
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            if (Enabled)
+            if (Enabled && fileLoaded)
             {
                 foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                 }
 
-                Core.GraphicsDM.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(                    PrimitiveType.LineList, pointList,
-                    0,  // vertex buffer offset to add to each element of the index buffer
-                    pointList.Length,  // number of vertices in pointList
-                    lineListIndices,  // the index buffer
-                    0,  // first index element to read
-                    pointList.Length - 1   // number of primitives to draw
+                Core.GraphicsDM.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(
+                    PrimitiveType.LineList, pointList, //Type, Vertex array for vertices.
+                    0,  // Vertex buffer offset to add to each element of the index buffer.
+                    pointList.Length,  // Number of vertices in pointList.
+                    lineListIndices,  // The index buffer.
+                    0,  // First index element to read.
+                    pointList.Length - 1   // Number of primitives to draw.
                 );
             }
         }
 
-        public void LoadVectorModel(string name)
+        public void Transform()
         {
-
+            // Calculate the mesh transformation by combining translation, rotation, and scaling
+            localMatrix = Matrix.CreateScale(Scale) *
+                Matrix.CreateFromYawPitchRoll(Rotation.X, Rotation.Y, Rotation.Z)
+                * Matrix.CreateTranslation(Position);
+            // Apply to Effect
+            Effect.World = localMatrix;
+            Effect.View = _camera.View;
+            Effect.Projection = _camera.Projection;
+            Effect.EmissiveColor = EmissiveColor;
+            Effect.DiffuseColor = DiffuseColor;
+            Effect.Alpha = Alpha;
         }
 
-        public float InitializePoints(Vector3[] pointPosition)
+        public float LoadVectorModel(string name, Color color)
+        {
+            return InitializePoints(ReadFile(name), color);
+        }
+
+        public float LoadVectorModel(string name)
+        {
+            return InitializePoints(ReadFile(name), Color.White);
+        }
+
+        public float InitializePoints(Vector3[] pointPosition, Color color)
         {
             float radius = 0;
 
-            if (true)
+            if (fileLoaded)
             {
                 VertexDeclaration vertexDeclaration = new VertexDeclaration(new VertexElement[]
                     {
@@ -84,7 +110,7 @@ namespace Panther
 
                 for (int x = 0; x < pointPosition.Length; x++)
                 {
-                    pointList[x] = new VertexPositionColor(pointPosition[x], new Color(190, 170, 255));
+                    pointList[x] = new VertexPositionColor(pointPosition[x], color);
                 }
 
                 // Initialize the vertex buffer, allocating memory for each vertex.
@@ -109,7 +135,6 @@ namespace Panther
 
             return radius;
         }
-
         /// <summary>
         /// Initializes the effect (loading, parameter setting, and technique selection)
         /// used by the game. Moved to Services.
@@ -118,13 +143,15 @@ namespace Panther
         {
             Effect = new BasicEffect(Core.Graphics);
             Effect.VertexColorEnabled = true;
-            Effect.View = camera.View;
-            Effect.Projection = camera.Projection;
+            Effect.TextureEnabled = false;
+            Effect.View = theCamera.View;
+            Effect.Projection = theCamera.Projection;
             Effect.World = localMatrix;
         }
 
         public void WriteFile(Vector3[] vertices, string fileName)
         {
+            fileName = "Content/Models/" + fileName + ".vec";
             fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write);
 
             foreach (Vector3 vert in vertices)
@@ -135,17 +162,23 @@ namespace Panther
 
             Close();
         }
-
+        /// <summary>
+        /// Read model file and convert/decode to Vector3 Array.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public Vector3[] ReadFile(string fileName)
         {
             string dataRead = "";
             List<Vector3> vertRead = new List<Vector3>();
+            fileName = "Content/Models/" + fileName + ".vec";
 
             if (File.Exists(fileName))
             {
                 fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                 byte[] dataByte = new byte[1024];
                 UTF8Encoding bufferUTF8 = new UTF8Encoding(true);
+                fileLoaded = true;
 
                 while (fileStream.Read(dataByte, 0, dataByte.Length) > 0)
                 {
@@ -156,10 +189,9 @@ namespace Panther
 
                 string onAxis = "";
                 string number = "";
-                int onVert = 0;
                 float X = 0;
                 float Y = 0;
-                float Z = 0;
+                float Z;
 
                 foreach(char dataChar in dataRead)
                 {
@@ -173,74 +205,77 @@ namespace Panther
                         continue;
                     }
 
-                    if (dataChar.ToString() == "X")
+                    switch (dataChar.ToString())
                     {
-                        onAxis = dataChar.ToString();
-                        continue;
-                    }
-                    else if (dataChar.ToString() == "Y")
-                    {
-                        onAxis = dataChar.ToString();
-                        continue;
-                    }
-                    else if (dataChar.ToString() == "Z")
-                    {
-                        onAxis = dataChar.ToString();
-                        continue;
+                        case "X":
+                            onAxis = dataChar.ToString();
+                            continue;
+                        case "Y":
+                            onAxis = dataChar.ToString();
+                            continue;
+                        case "Z":
+                            onAxis = dataChar.ToString();
+                            continue;
                     }
 
-                    if (onAxis == "X")
+                    switch (onAxis)
                     {
-                        if (dataChar.ToString() == " ")
-                        {
-                            X = float.Parse(number);
-                            number = "";
-                            onAxis = "";
-                        }
-                        else
-                        {
+                        case "X":
+                            if (dataChar.ToString() == " ")
+                            {
+                                X = float.Parse(number);
+                                number = "";
+                                onAxis = "";
+                            }
+                            else
+                            {
+                                if (dataChar.ToString() == "}")
+                                {
+                                    continue;
+                                }
+
+                                number += dataChar.ToString();
+                            }
+                            break;
+                        case "Y":
+                            if (dataChar.ToString() == " ")
+                            {
+                                Y = float.Parse(number);
+                                number = "";
+                                onAxis = "";
+                            }
+                            else
+                            {
+                                if (dataChar.ToString() == "}")
+                                {
+                                    continue;
+                                }
+
+                                number += dataChar.ToString();
+                            }
+                            break;
+                        case "Z":
                             if (dataChar.ToString() == "}")
                             {
-                                continue;
+                                Z = float.Parse(number);
+                                vertRead.Add(new Vector3(X, Y, Z));
+                                onAxis = "";
+                                number = "";
                             }
-
-                            number += dataChar.ToString();
-                        }
-                    }
-                    else if (onAxis == "Y")
-                    {
-                        if (dataChar.ToString() == " ")
-                        {
-                            Y = float.Parse(number);
-                            number = "";
-                            onAxis = "";
-                        }
-                        else
-                        {
-                            if (dataChar.ToString() == "}")
+                            else
                             {
-                                continue;
+                                number += dataChar.ToString();
                             }
-
-                            number += dataChar.ToString();
-                        }
+                            break;
                     }
-                    else if (onAxis == "Z")
-                    {
-                        if (dataChar.ToString() == "}")
-                        {
-                            Z = float.Parse(number);
-                            vertRead.Add(new Vector3(X, Y, Z));
-                            onAxis = "";
-                            number = "";
-                        }
-                        else
-                        {
-                            number += dataChar.ToString();
-                        }
-                    }
-
                 }
+            }
+            else
+            {
+                //Debug file not found.
+                System.Diagnostics.Debug.WriteLine("File " + fileName + " not found.");
+                vertRead.Add(Vector3.Zero);
+                vertRead.Add(Vector3.Zero);
             }
 
             Vector3[] verts = new Vector3[vertRead.Count];
@@ -271,16 +306,6 @@ namespace Panther
                 lineListIndices[i * 2] = (short)(i);
                 lineListIndices[(i * 2) + 1] = (short)(i + 1);
             }
-        }
-
-        void Transform()
-        {
-            // Calculate the mesh transformation by combining translation, rotation, and scaling
-            localMatrix = Matrix.CreateScale(Scale) * 
-                Matrix.CreateFromYawPitchRoll(Rotation.X, Rotation.Y, Rotation.Z)
-                * Matrix.CreateTranslation(Position);
-            // Apply to Effect
-            Effect.World = localMatrix;
         }
 
         void Close()

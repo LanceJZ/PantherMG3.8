@@ -103,14 +103,17 @@ namespace Panther
         #region Initialize
         public override void Initialize()
         {
-
+            base.Initialize();
         }
         #endregion
         #region Update
         public override void Update(GameTime gameTime)
         {
-
             base.Update(gameTime);
+        }
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
         }
         #endregion
         public Matrix RotateMatrix(Vector3 rotation)

@@ -222,10 +222,7 @@ namespace Panther
         public override void Initialize()
         {
             base.Initialize();
-            BeginRun();
         }
-
-        public virtual void BeginRun() { }
         /// <summary>
         /// Allows the game component to be updated.
         /// </summary>
@@ -247,14 +244,19 @@ namespace Panther
 
             if (_isChild)
             {
-                if (DirectConnection)
-                {
-                    Position = ParentPO.Position;
-                    Rotation = ParentPO.Rotation;
-                }
+                UpdateChild();
             }
 
             base.Update(gameTime);
+        }
+
+        public void UpdateChild()
+        {
+            if (DirectConnection)
+            {
+                Position = ParentPO.Position;
+                Rotation = ParentPO.Rotation;
+            }
         }
 
         Vector3 WrapAngle(Vector3 angle)
@@ -280,21 +282,21 @@ namespace Panther
             return angle;
         }
         /// <summary>
-        /// Adds child that is not directly connect.
+        /// Adds child that is directly connect.
         /// </summary>
         /// <param name="parrent">The parent to this class.</param>
         /// <param name="activeDependent">If this class is active when the parent is.</param>
         public virtual void AddAsChildOf(PositionedObject parrent, bool activeDependent)
         {
-            AddAsChildOf(parrent, activeDependent, false);
+            AddAsChildOf(parrent, activeDependent, true);
         }
         /// <summary>
-        /// Adds child that is active dependent and not directly connected.
+        /// Adds child that is not active dependent and directly connected.
         /// </summary>
         /// <param name="parrent">The Parent to this class.</param>
         public virtual void AddAsChildOf(PositionedObject parrent)
         {
-            AddAsChildOf(parrent, true, false);
+            AddAsChildOf(parrent, false, true);
         }
         /// <summary>
         /// Add PO class or base PO class from AModel or Sprite as child of this class.
@@ -358,8 +360,6 @@ namespace Panther
         {
             Game.Components.Remove(this);
         }
-
-
         #endregion
     }
 }
