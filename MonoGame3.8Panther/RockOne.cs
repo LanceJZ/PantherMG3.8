@@ -10,7 +10,7 @@ namespace MonoGame38Test
     {
         public RockOne(Game game, Camera camera) : base (game, camera)
         {
-            PO.Radius = InitializePoints(ReadFile("RockOne"), new Color(170, 170, 255));
+            PO.Radius = LoadVectorModel("RockOne", new Color(170, 170, 255));
 
         }
 

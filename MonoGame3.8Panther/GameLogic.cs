@@ -29,6 +29,7 @@ namespace MonoGame38Test
         ModelEntity _box;
         PlayerShip player;
         RockOne rockOne;
+        Vector cross;
 
         GameState _gameMode = GameState.MainMenu;
         KeyboardState _oldKeyState;
@@ -48,7 +49,7 @@ namespace MonoGame38Test
             _cubeSub = new ShapeGenerater(game, camera, genCube, cubePrims);
             _cubeSubSub = new ShapeGenerater(game, camera, genCube, cubePrims);
 
-            _text = new TextGrid(game, camera, 1.0f, Vector3.One);
+            _text = new TextGrid(game, camera, 0.10f, Vector3.One);
 
             _score = new NumberGenerator(game);
 
@@ -59,6 +60,7 @@ namespace MonoGame38Test
 
             player = new PlayerShip(Game, _camera);
             rockOne = new RockOne(Game, _camera);
+            cross = new Vector(Game, camera);
 
             game.Components.Add(this);
         }
@@ -70,6 +72,12 @@ namespace MonoGame38Test
             _score.Position.Y = 300;
             _score.Position.X = -125;
 
+            _text.Position.Y = 5;
+
+            float crossSize = 0.5f;
+            Vector3[] crossVertex = { new Vector3(crossSize, 0, 0), new Vector3(-crossSize, 0, 0),
+                new Vector3(0, crossSize, 0), new Vector3(0, -crossSize, 0) };
+            cross.InitializePoints(crossVertex, Color.White);
         }
 
         public void BeginRun()
@@ -108,9 +116,18 @@ namespace MonoGame38Test
             //player.DiffuseColor = new Vector3(0.25f, 0.05f, 1.0f);
             rockOne.RotationVelocity = new Vector3(0, 0, -0.1f);
             rockOne.Position = new Vector3(15, 10, 0);
+
+            cross.Enabled = false;
         }
 
         public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            GetKeys();
+        }
+
+        void GetKeys()
         {
             KeyboardState KBS = Keyboard.GetState();
 
@@ -121,9 +138,52 @@ namespace MonoGame38Test
                     _cubeSubSub.Enabled = !_cubeSubSub.Enabled;
                     _cubeSubSub.UpdateMatrix();
                 }
+
+                if (KBS.IsKeyDown(Keys.Enter))
+                {
+                    if (cross.Enabled)
+                    {
+                        System.Diagnostics.Debug.WriteLine("X: " + cross.X.ToString() +
+                            " " + "Y: " + cross.Y.ToString());
+                    }
+                }
+
+                if (KBS.IsKeyDown(Keys.End))
+                {
+                    cross.Enabled = !cross.Enabled;
+                }
             }
 
             _oldKeyState = Keyboard.GetState();
+
+            if (cross.Enabled)
+            {
+                if (KBS.IsKeyDown(Keys.W))
+                {
+                    cross.PO.Velocity.Y += 0.125f;
+                }
+                else if (KBS.IsKeyDown(Keys.S))
+                {
+                    cross.PO.Velocity.Y -= 0.125f;
+                }
+                else
+                {
+                    cross.PO.Velocity.Y = 0;
+                }
+
+                if (KBS.IsKeyDown(Keys.D))
+                {
+                    cross.PO.Velocity.X += 0.125f;
+                }
+                else if (KBS.IsKeyDown(Keys.A))
+                {
+                    cross.PO.Velocity.X -= 0.125f;
+                }
+                else
+                {
+                    cross.PO.Velocity.X = 0;
+                }
+            }
 
             if (KBS.IsKeyDown(Keys.Up))
             {
@@ -150,8 +210,6 @@ namespace MonoGame38Test
             {
                 _cube.PO.Velocity.X = 0;
             }
-
-            base.Update(gameTime);
         }
     }
 }

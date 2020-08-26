@@ -14,7 +14,7 @@ namespace MonoGame38Test
 
         public PlayerShip(Game game, Camera camera) : base (game, camera)
         {
-            PO.Radius = InitializePoints(ReadFile("PlayerShip"), new Color(200, 200, 255));
+            PO.Radius = LoadVectorModel("PlayerShip", new Color(200, 200, 255));
             ship = new Vector(game, camera);
         }
 
@@ -22,7 +22,7 @@ namespace MonoGame38Test
         {
             base.Initialize();
 
-            ship.InitializePoints(ship.ReadFile("PlayerShip"), new Color(170, 170, 255));
+            ship.LoadVectorModel("PlayerShip", new Color(170, 170, 255));
             ship.Position = new Vector3(-20, 17, 0);
             ship.Rotation = new Vector3(0, 0, (float)Math.PI / 2);
 

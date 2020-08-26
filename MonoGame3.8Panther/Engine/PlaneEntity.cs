@@ -36,9 +36,8 @@ namespace Panther
             base.Initialize();
         }
 
-        public override void BeginRun()
+        public void BeginRun()
         {
-            base.BeginRun();
 
         }
 
