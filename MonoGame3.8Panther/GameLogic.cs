@@ -151,6 +151,7 @@ namespace MonoGame38Test
                 if (KBS.IsKeyDown(Keys.End))
                 {
                     cross.Enabled = !cross.Enabled;
+                    cross.Position = Vector3.Zero;
                 }
             }
 

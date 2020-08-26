@@ -30,8 +30,8 @@ namespace MonoGame38Test
             _graphics.PreparingDeviceSettings += SetMultiSampling;
             _graphics.ApplyChanges();
             _graphics.GraphicsDevice.RasterizerState = new RasterizerState(); //Must be after Apply Changes.
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 960;
+            _graphics.PreferredBackBufferWidth = 1200;
+            _graphics.PreferredBackBufferHeight = 900;
             _graphics.ApplyChanges();
             IsFixedTimeStep = false;
             Content.RootDirectory = "Content";
@@ -39,7 +39,7 @@ namespace MonoGame38Test
 
             Core.Initialize(this, _graphics);
 
-            // Screen resolution is 1280 X 960.
+            // Screen resolution is 1200 X 900.
             // Y positive is Up.
             // (X) positive is to the right when camera is at rotation zero.
             // Z positive is towards the camera when at rotation zero.
