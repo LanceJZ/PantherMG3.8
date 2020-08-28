@@ -11,7 +11,7 @@ using Panther;
 
 namespace Asteroids2020.Engine
 {
-    class ModelFile : GameComponent
+    class FileIO : GameComponent
     {
         #region Fields
         FileStream fileStream;
@@ -20,7 +20,7 @@ namespace Asteroids2020.Engine
 
         #endregion
         #region Constructor
-        public ModelFile(Game game) : base(game)
+        public FileIO(Game game) : base(game)
         {
 
             game.Components.Add(this);

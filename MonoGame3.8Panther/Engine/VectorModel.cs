@@ -10,10 +10,10 @@ using Asteroids2020.Engine;
 
 namespace Panther
 {
-    public class Vector : Entity
+    public class VectorModel : Entity
     {
         Camera theCamera;
-        ModelFile modelFile;
+        FileIO modelFile;
         Matrix localMatrix;
         VertexPositionColor[] pointList;
         VertexBuffer vertexBuffer;
@@ -21,10 +21,10 @@ namespace Panther
         short[] lineListIndices;
         public float Alpha = 1;
 
-        public Vector (Game game, Camera camera): base(game, camera)
+        public VectorModel (Game game, Camera camera): base(game, camera)
         {
             theCamera = camera;
-            modelFile = new ModelFile(game);
+            modelFile = new FileIO(game);
         }
 
         public override void Initialize()

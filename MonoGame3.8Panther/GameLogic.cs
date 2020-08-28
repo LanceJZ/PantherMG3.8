@@ -11,6 +11,7 @@ public enum GameState
 {
     Over,
     InPlay,
+    Pause,
     HighScore,
     MainMenu
 };
@@ -29,10 +30,9 @@ namespace MonoGame38Test
         ModelEntity _box;
         PlayerShip player;
         RockOne rockOne;
-        Vector cross;
+        VectorModel cross;
 
-        GameState _gameMode = GameState.MainMenu;
-        KeyboardState _oldKeyState;
+        GameState _gameMode = GameState.InPlay;
 
         public GameState CurrentMode { get => _gameMode; }
 
@@ -60,7 +60,7 @@ namespace MonoGame38Test
 
             player = new PlayerShip(Game, _camera);
             rockOne = new RockOne(Game, _camera);
-            cross = new Vector(Game, camera);
+            cross = new VectorModel(Game, camera);
 
             game.Components.Add(this);
         }
@@ -127,43 +127,49 @@ namespace MonoGame38Test
             GetKeys();
         }
 
-        void GetKeys()
+        public void GetKeys()
         {
-            KeyboardState KBS = Keyboard.GetState();
-
-            if (KBS != _oldKeyState)
+            if (Core.KeyPressed(Keys.Space))
             {
-                if (KBS.IsKeyDown(Keys.Space))
-                {
-                    _cubeSubSub.Enabled = !_cubeSubSub.Enabled;
-                    _cubeSubSub.UpdateMatrix();
-                }
+                _cubeSubSub.Enabled = !_cubeSubSub.Enabled;
+                _cubeSubSub.UpdateMatrix();
+            }
 
-                if (KBS.IsKeyDown(Keys.Enter))
+            if (Core.KeyPressed(Keys.Enter))
+            {
+                if (cross.Enabled)
                 {
-                    if (cross.Enabled)
-                    {
-                        System.Diagnostics.Debug.WriteLine("X: " + cross.X.ToString() +
-                            " " + "Y: " + cross.Y.ToString());
-                    }
-                }
-
-                if (KBS.IsKeyDown(Keys.End))
-                {
-                    cross.Enabled = !cross.Enabled;
-                    cross.Position = Vector3.Zero;
+                    System.Diagnostics.Debug.WriteLine("X: " + cross.X.ToString() +
+                        " " + "Y: " + cross.Y.ToString());
                 }
             }
 
-            _oldKeyState = Keyboard.GetState();
+            if (Core.KeyPressed(Keys.End))
+            {
+                cross.Enabled = !cross.Enabled;
+                cross.Position = Vector3.Zero;
+            }
+
+            if (Core.KeyPressed(Keys.Pause))
+            {
+                if (CurrentMode == GameState.InPlay)
+                {
+                    _gameMode = GameState.Pause;
+                }
+                else if (CurrentMode == GameState.Pause)
+                {
+                    _gameMode = GameState.InPlay;
+                }
+            }
+
 
             if (cross.Enabled)
             {
-                if (KBS.IsKeyDown(Keys.W))
+                if (Core.KeyDown(Keys.W))
                 {
                     cross.PO.Velocity.Y += 0.125f;
                 }
-                else if (KBS.IsKeyDown(Keys.S))
+                else if (Core.KeyDown(Keys.S))
                 {
                     cross.PO.Velocity.Y -= 0.125f;
                 }
@@ -172,11 +178,11 @@ namespace MonoGame38Test
                     cross.PO.Velocity.Y = 0;
                 }
 
-                if (KBS.IsKeyDown(Keys.D))
+                if (Core.KeyDown(Keys.D))
                 {
                     cross.PO.Velocity.X += 0.125f;
                 }
-                else if (KBS.IsKeyDown(Keys.A))
+                else if (Core.KeyDown(Keys.A))
                 {
                     cross.PO.Velocity.X -= 0.125f;
                 }
@@ -186,11 +192,11 @@ namespace MonoGame38Test
                 }
             }
 
-            if (KBS.IsKeyDown(Keys.Up))
+            if (Core.KeyDown(Keys.Up))
             {
                 _cube.PO.Velocity.Y += 1;
             }
-            else if (KBS.IsKeyDown(Keys.Down))
+            else if (Core.KeyDown(Keys.Down))
             {
                 _cube.PO.Velocity.Y -= 1;
             }
@@ -199,11 +205,11 @@ namespace MonoGame38Test
                 _cube.PO.Velocity.Y = 0;
             }
 
-            if (KBS.IsKeyDown(Keys.Left))
+            if (Core.KeyDown(Keys.Left))
             {
                 _cube.PO.Velocity.X -= 1;
             }
-            else if (KBS.IsKeyDown(Keys.Right))
+            else if (Core.KeyDown(Keys.Right))
             {
                 _cube.PO.Velocity.X += 1;
             }

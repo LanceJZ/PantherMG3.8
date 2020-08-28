@@ -7,15 +7,15 @@ using Panther;
 
 namespace MonoGame38Test
 {
-    public class PlayerShip : Vector
+    public class PlayerShip : VectorModel
     {
-        Vector ship;
+        VectorModel ship;
 
 
         public PlayerShip(Game game, Camera camera) : base (game, camera)
         {
             PO.Radius = LoadVectorModel("PlayerShip", new Color(200, 200, 255));
-            ship = new Vector(game, camera);
+            ship = new VectorModel(game, camera);
         }
 
         public override void Initialize()

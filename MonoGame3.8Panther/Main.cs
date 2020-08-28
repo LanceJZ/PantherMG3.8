@@ -5,7 +5,7 @@ using Panther;
 
 namespace MonoGame38Test
 {
-    public class Game1 : Game
+    public class Main : Game
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
@@ -17,10 +17,9 @@ namespace MonoGame38Test
         float _FPSTotal = 0;
         float _FPSCount = 0;
 
-        KeyboardState _oldKeyState;
         bool _pauseGame = false;
 
-        public Game1()
+        public Main()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.IsFullScreen = false;
@@ -47,7 +46,7 @@ namespace MonoGame38Test
             _camera = new Camera(this, new Vector3(0, 0, 50), new Vector3(0, MathHelper.Pi, 0),
                 GraphicsDevice.Viewport.AspectRatio, 1f, 1200f);
 
-            _FPSTimer = new Timer(this, 1);
+            _FPSTimer = new Timer(this, 10);
             _game = new GameLogic(this, _camera);
         }
 
@@ -66,8 +65,6 @@ namespace MonoGame38Test
         protected override void Initialize()
         {
             // Setup lighting.
-            Core.ScreenHeight = (uint)_graphics.PreferredBackBufferHeight;
-            Core.SreenWidth = (uint)_graphics.PreferredBackBufferWidth;
 
             base.Initialize();
         }
@@ -108,18 +105,16 @@ namespace MonoGame38Test
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            KeyboardState KBS = Keyboard.GetState();
-
-            if (_game.CurrentMode == GameState.InPlay)
+            if (_game.CurrentMode != GameState.Pause)
             {
-                if (!_oldKeyState.IsKeyDown(Keys.P) && KBS.IsKeyDown(Keys.P))
-                    _pauseGame = !_pauseGame;
+                base.Update(gameTime);
+            }
+            else
+            {
+                _game.GetKeys();
             }
 
-            _oldKeyState = Keyboard.GetState();
-
-            if (!_pauseGame)
-                base.Update(gameTime);
+            Core.UpdateKeys();
 
             _FPSFrames++;
 

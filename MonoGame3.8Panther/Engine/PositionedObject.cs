@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.Security.Cryptography.X509Certificates;
 #endregion
 
 namespace Panther
@@ -39,6 +40,7 @@ namespace Panther
         bool _inDebugMode;
         #endregion
         #region Properties
+
         public Vector3 WorldPosition
         {
             get
@@ -360,6 +362,36 @@ namespace Panther
         {
             Game.Components.Remove(this);
         }
+        /// <summary>
+        /// Circle collusion detection. Target circle will be compared to this class's.
+        /// Will return true of they intersect. Only for use with 2D Z plane.
+        /// </summary>
+        /// <param name="target">Target Positioned Object.</param>
+        /// <returns></returns>
+        public bool CirclesIntersect(PositionedObject target)
+        {
+            if (!Enabled || !target.Enabled)
+                return false;
+
+            float distanceX = target.X - X;
+            float distanceY = target.Y - Y;
+            float radius = Radius + target.Radius;
+
+            if ((distanceX * distanceX) + (distanceY * distanceY) < radius * radius)
+                return true;
+
+            return false;
+        }
+        /// <summary>
+        /// Returns a float of the angle in radians to target, using only the X and Y.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public float AngleFromVectorsZ(Vector3 target)
+        {
+            return MathF.Atan2(target.Y - Y, target.X - X);
+        }
+
         #endregion
     }
 }

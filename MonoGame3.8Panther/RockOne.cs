@@ -6,7 +6,7 @@ using Panther;
 
 namespace MonoGame38Test
 {
-    public class RockOne : Vector
+    public class RockOne : VectorModel
     {
         public RockOne(Game game, Camera camera) : base (game, camera)
         {
