@@ -31,6 +31,7 @@ namespace MonoGame38Test
         PlayerShip player;
         RockOne rockOne;
         VectorModel cross;
+        SpriteFont hyper20Font;
 
         GameState _gameMode = GameState.InPlay;
 
@@ -64,7 +65,7 @@ namespace MonoGame38Test
 
             game.Components.Add(this);
         }
-
+        #region Public Methods
         public override void Initialize()
         {
             base.Initialize();
@@ -78,6 +79,16 @@ namespace MonoGame38Test
             Vector3[] crossVertex = { new Vector3(crossSize, 0, 0), new Vector3(-crossSize, 0, 0),
                 new Vector3(0, crossSize, 0), new Vector3(0, -crossSize, 0) };
             cross.InitializePoints(crossVertex, Color.White);
+        }
+
+        public void LoadContent()
+        {
+            hyper20Font = Game.Content.Load<SpriteFont>("Hyperspace20");
+        }
+
+        public void UnloadContent()
+        {
+
         }
 
         public void BeginRun()
@@ -127,6 +138,13 @@ namespace MonoGame38Test
             GetKeys();
         }
 
+        public void Draw()
+        {
+            Core.SpriteBatch.Begin();
+            Core.SpriteBatch.DrawString(hyper20Font, "Test", new Vector2(100, 100), Color.White);
+            Core.SpriteBatch.End();
+        }
+                
         public void GetKeys()
         {
             if (Core.KeyPressed(Keys.Space))
@@ -218,5 +236,8 @@ namespace MonoGame38Test
                 _cube.PO.Velocity.X = 0;
             }
         }
+        #endregion
+        #region Private Methods
+        #endregion
     }
 }

@@ -13,8 +13,9 @@ namespace Panther
         #region Fields
         static GraphicsDeviceManager _graphicsDM;
         static GraphicsDevice _graphics;
-        static Random _randomNumberGenerator = new Random(DateTime.Now.Millisecond);
+        readonly static Random _randomNumberGenerator = new Random(DateTime.Now.Millisecond);
         static Game _game;
+        static SpriteBatch _spriteBatch;
         static KeyboardState _keyStateOld;
         public static float ScreenWidth;
         public static float ScreenHeight;
@@ -24,6 +25,7 @@ namespace Panther
         public static GraphicsDeviceManager GraphicsDM { get => _graphicsDM; }
         public static GraphicsDevice Graphics { get => _graphics; }
         public static Game TheGame { get => _game; }
+        public static SpriteBatch SpriteBatch { get => _spriteBatch; }
         /// <summary>
         /// Returns the window size in pixels, of the height.
         /// </summary>
@@ -44,11 +46,13 @@ namespace Panther
         }
         #endregion
         #region Initialize
-        public static void Initialize(Game game, GraphicsDeviceManager graphicsDeviceManager)
+        public static void Initialize(Game game, GraphicsDeviceManager graphicsDeviceManager,
+            SpriteBatch spriteBatch)
         {
             _game = game;
             _graphicsDM = graphicsDeviceManager;
             _graphics = graphicsDeviceManager.GraphicsDevice;
+            _spriteBatch = spriteBatch;
         }
         #endregion
         #region Methods

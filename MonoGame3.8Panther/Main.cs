@@ -7,17 +7,17 @@ namespace MonoGame38Test
 {
     public class Main : Game
     {
+        public static GameLogic instance;
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         GameLogic _game;
         Camera _camera;
 
         Timer _FPSTimer;
+        Timer _FPSDesplayTimer;
         float _FPSFrames = 0;
         float _FPSTotal = 0;
         float _FPSCount = 0;
-
-        bool _pauseGame = false;
 
         public Main()
         {
@@ -29,14 +29,16 @@ namespace MonoGame38Test
             _graphics.PreparingDeviceSettings += SetMultiSampling;
             _graphics.ApplyChanges();
             _graphics.GraphicsDevice.RasterizerState = new RasterizerState(); //Must be after Apply Changes.
-            _graphics.PreferredBackBufferWidth = 1200;
-            _graphics.PreferredBackBufferHeight = 900;
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 960;
             _graphics.ApplyChanges();
-            IsFixedTimeStep = false;
+            IsFixedTimeStep = true;
             Content.RootDirectory = "Content";
             // Positive Y is Up. Positive X is Right.
+            // Create a new SpriteBatch, which can be used to draw textures.
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Core.Initialize(this, _graphics);
+            Core.Initialize(this, _graphics, _spriteBatch);
 
             // Screen resolution is 1200 X 900.
             // Y positive is Up.
@@ -44,9 +46,10 @@ namespace MonoGame38Test
             // Z positive is towards the camera when at rotation zero.
             // Rotation on object rotates CCW. Zero has front facing X positive. Pi/2 on Y faces Z negative.
             _camera = new Camera(this, new Vector3(0, 0, 50), new Vector3(0, MathHelper.Pi, 0),
-                GraphicsDevice.Viewport.AspectRatio, 1f, 1200f);
+                GraphicsDevice.Viewport.AspectRatio, 1f, 60f);
 
-            _FPSTimer = new Timer(this, 10);
+            _FPSTimer = new Timer(this, 1);
+            _FPSDesplayTimer = new Timer(this, 30);
             _game = new GameLogic(this, _camera);
         }
 
@@ -64,7 +67,14 @@ namespace MonoGame38Test
         /// </summary>
         protected override void Initialize()
         {
+            if (instance == null)
+            {
+                instance = _game;
+            }
+
             // Setup lighting.
+            Core.ScreenHeight = (uint)_graphics.PreferredBackBufferHeight;
+            Core.ScreenWidth = (uint)_graphics.PreferredBackBufferWidth;
 
             base.Initialize();
         }
@@ -75,8 +85,8 @@ namespace MonoGame38Test
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            base.LoadContent();
+            _game.LoadContent();
         }
 
         /// <summary>
@@ -85,7 +95,8 @@ namespace MonoGame38Test
         /// </summary>
         protected override void UnloadContent()
         {
-
+            base.UnloadContent();
+            _game.UnloadContent();
         }
 
         protected override void BeginRun()
@@ -124,7 +135,14 @@ namespace MonoGame38Test
                 _FPSTotal += _FPSFrames;
                 _FPSCount++;
                 float average = _FPSTotal / _FPSCount;
-                System.Diagnostics.Debug.WriteLine("FPS " + _FPSFrames.ToString() + " Average " + average.ToString());
+
+                if (_FPSDesplayTimer.Elapsed)
+                {
+                    _FPSDesplayTimer.Reset();
+                    System.Diagnostics.Debug.WriteLine("FPS " + _FPSFrames.ToString() + " Average " +
+                        average.ToString());
+                }
+
                 _FPSFrames = 0;
             }
         }
@@ -136,9 +154,8 @@ namespace MonoGame38Test
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(new Color(0.05f, 0, 0.1f));
-            //GraphicsDevice.Clear(Color.Red);
-
             base.Draw(gameTime);
+            _game.Draw();
         }
     }
 }
