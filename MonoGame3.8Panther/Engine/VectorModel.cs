@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
-using Asteroids2020.Engine;
 #endregion
 
 namespace Panther
@@ -16,10 +15,13 @@ namespace Panther
         FileIO modelFile;
         Matrix localMatrix;
         VertexPositionColor[] pointList;
+        Vector3[] vertexArray;
         VertexBuffer vertexBuffer;
         RasterizerState rasterizerState;
         short[] lineListIndices;
         public float Alpha = 1;
+
+        public Vector3[] VertexArray { get => vertexArray; }
 
         public VectorModel (Game game, Camera camera): base(game, camera)
         {
@@ -82,21 +84,45 @@ namespace Panther
             Effect.Alpha = Alpha;
         }
 
+        public override void Spawn(Vector3 position)
+        {
+            base.Spawn(position);
+            Transform();
+        }
+
+        public override void Spawn(Vector3 position, Vector3 velocity)
+        {
+            base.Spawn(position, velocity);
+            Transform();
+        }
+
+        public override void Spawn(Vector3 position, Vector3 rotation, Vector3 velocity)
+        {
+            base.Spawn(position, rotation, velocity);
+            Transform();
+        }
+
+        public override void Spawn(Vector3 position, Vector3 rotation, Vector3 rotationVelocity, Vector3 velocity)
+        {
+            base.Spawn(position, rotation, rotationVelocity, velocity);
+            Transform();
+        }
+
         public float LoadVectorModel(string name, Color color)
         {
-            return InitializePoints(modelFile.ReadFile(name), color);
+            return InitializePoints(modelFile.ReadVectorModelFile(name), color);
         }
 
         public float LoadVectorModel(string name)
         {
-            return InitializePoints(modelFile.ReadFile(name), Color.White);
+            return InitializePoints(modelFile.ReadVectorModelFile(name), Color.White);
         }
 
-        public float InitializePoints(Vector3[] pointPosition, Color color)
+        public float InitializePoints(Vector3[] pointPositions, Color color)
         {
-            float radius = 0;
+            vertexArray = pointPositions;
 
-            if (pointPosition != null)
+            if (pointPositions != null)
             {
                 VertexDeclaration vertexDeclaration = new VertexDeclaration(new VertexElement[]
                     {
@@ -105,16 +131,16 @@ namespace Panther
                     }
                 );
 
-                pointList = new VertexPositionColor[pointPosition.Length];
+                pointList = new VertexPositionColor[pointPositions.Length];
 
-                for (int x = 0; x < pointPosition.Length; x++)
+                for (int x = 0; x < pointPositions.Length; x++)
                 {
-                    pointList[x] = new VertexPositionColor(pointPosition[x], color);
+                    pointList[x] = new VertexPositionColor(pointPositions[x], color);
                 }
 
                 // Initialize the vertex buffer, allocating memory for each vertex.
                 vertexBuffer = new VertexBuffer(Core.GraphicsDM.GraphicsDevice, vertexDeclaration,
-                    pointPosition.Length, BufferUsage.None);
+                    pointPositions.Length, BufferUsage.None);
 
                 // Set the vertex buffer data to the array of vertices.
                 vertexBuffer.SetData<VertexPositionColor>(pointList);
@@ -123,16 +149,16 @@ namespace Panther
                 Transform();
             }
 
-            for (int i = 0; i < pointPosition.Length; i++)
+            for (int i = 0; i < pointPositions.Length; i++)
             {
-                if (Math.Abs(pointPosition[i].X) > radius)
-                    radius = Math.Abs(pointPosition[i].X);
+                if (Math.Abs(pointPositions[i].X) > PO.Radius)
+                    PO.Radius = Math.Abs(pointPositions[i].X);
 
-                if (Math.Abs(pointPosition[i].Y) > radius)
-                    radius = Math.Abs(pointPosition[i].Y);
+                if (Math.Abs(pointPositions[i].Y) > PO.Radius)
+                    PO.Radius = Math.Abs(pointPositions[i].Y);
             }
 
-            return radius;
+            return PO.Radius;
         }
         /// <summary>
         /// Initializes the effect (loading, parameter setting, and technique selection)
@@ -153,7 +179,7 @@ namespace Panther
             rasterizerState.Dispose();
             Dispose();
         }
-
+        #region Private Methods
         void InitializeLineList()
         {
             // Initialize an array of indices of type short.
@@ -166,5 +192,6 @@ namespace Panther
                 lineListIndices[(i * 2) + 1] = (short)(i + 1);
             }
         }
+        #endregion
     }
 }

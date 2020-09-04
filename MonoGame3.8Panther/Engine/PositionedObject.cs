@@ -29,6 +29,7 @@ namespace Panther
         float _scalePercent = 1;
         float _gameRefScale = 1;
         float _radius = 0;
+        bool _newSpawn;
         bool _hit;
         bool _explosionActive;
         bool _isPaused;
@@ -139,7 +140,7 @@ namespace Panther
         /// <summary>
         /// Used for circle collusion. Sets radius of circle.
         /// </summary>
-        public float Radius { get => _radius; set => _radius = value; }
+        public float Radius { get => _radius * _scalePercent; set => _radius = value; }
         /// <summary>
         /// Enabled means this class is a parent, and has at least one child.
         /// </summary>
@@ -207,6 +208,7 @@ namespace Panther
         public float X { get => Position.X; set => Position.X = value; }
         public float Y { get => Position.Y; set => Position.Y = value; }
         public float Z { get => Position.Z; set => Position.Z = value; }
+        public bool NewSpawn { get => _newSpawn; set => _newSpawn = value; }
         #endregion
         #region Constructor
         /// <summary>
@@ -386,12 +388,31 @@ namespace Panther
         /// Returns a float of the angle in radians to target, using only the X and Y.
         /// </summary>
         /// <param name="target"></param>
-        /// <returns></returns>
+        /// <returns>float</returns>
         public float AngleFromVectorsZ(Vector3 target)
         {
             return MathF.Atan2(target.Y - Y, target.X - X);
         }
 
+        public bool OffScreenSide()
+        {
+            if (X > Core.ScreenWidth || X < -Core.ScreenWidth)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool OffScreenTopBottom()
+        {
+            if (Y > Core.ScreenHeight || Y < -Core.ScreenHeight)
+            {
+                return true;
+            }
+
+            return false;
+        }
         #endregion
     }
 }

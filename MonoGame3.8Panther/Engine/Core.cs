@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Panther
 {
@@ -13,9 +14,9 @@ namespace Panther
         #region Fields
         static GraphicsDeviceManager _graphicsDM;
         static GraphicsDevice _graphics;
+        static SpriteBatch _spriteBatch;
         readonly static Random _randomNumberGenerator = new Random(DateTime.Now.Millisecond);
         static Game _game;
-        static SpriteBatch _spriteBatch;
         static KeyboardState _keyStateOld;
         public static float ScreenWidth;
         public static float ScreenHeight;
@@ -24,8 +25,8 @@ namespace Panther
         public static Random Rand { get => _randomNumberGenerator; }
         public static GraphicsDeviceManager GraphicsDM { get => _graphicsDM; }
         public static GraphicsDevice Graphics { get => _graphics; }
-        public static Game TheGame { get => _game; }
         public static SpriteBatch SpriteBatch { get => _spriteBatch; }
+        public static Game TheGame { get => _game; }
         /// <summary>
         /// Returns the window size in pixels, of the height.
         /// </summary>
@@ -109,6 +110,19 @@ namespace Panther
             }
 
             System.Diagnostics.Debug.WriteLine("The Texture File " + textureFileName + " was not found.");
+            return null;
+        }
+
+        public static SoundEffect LoadSound(string soundFileName)
+        {
+            if (soundFileName != "")
+            {
+                if (File.Exists("Content/Sounds/" + soundFileName + ".xnb"))
+                {
+                    return _game.Content.Load<SoundEffect>("Sounds/" + soundFileName);
+                }
+            }
+
             return null;
         }
 
@@ -484,7 +498,7 @@ namespace Panther
         /// <returns>Float</returns>
         public static float AngleFromVectorsY(Vector3 origin, Vector3 target)
         {
-            return MathF.Atan2(-target.Z - -origin.Z, target.X - origin.X);
+            return (MathF.Atan2(-target.Z - -origin.Z, target.X - origin.X));
         }
         /// <summary>
         /// Returns a float of the angle in radians to target, using only the X and Y.
@@ -494,7 +508,7 @@ namespace Panther
         /// <returns></returns>
         public static float AngleFromVectorsZ(Vector3 origin, Vector3 target)
         {
-            return MathF.Atan2(target.Y - origin.Y, target.X - origin.X);
+            return (MathF.Atan2(target.Y - origin.Y, target.X - origin.X));
         }
 
         public static float RandomRadian()
