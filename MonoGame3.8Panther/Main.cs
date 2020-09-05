@@ -46,7 +46,7 @@ namespace MonoGame38Test
             // Z positive is towards the camera when at rotation zero.
             // Rotation on object rotates CCW. Zero has front facing X positive. Pi/2 on Y faces Z negative.
             _camera = new Camera(this, new Vector3(0, 0, 50), new Vector3(0, MathHelper.Pi, 0),
-                GraphicsDevice.Viewport.AspectRatio, 1f, 60f);
+                GraphicsDevice.Viewport.AspectRatio, 1f, 1000f);
 
             _FPSTimer = new Timer(this, 1);
             _FPSDesplayTimer = new Timer(this, 30);
@@ -72,6 +72,8 @@ namespace MonoGame38Test
                 instance = _game;
             }
 
+            // Window Title
+            Window.Title = "MonoGame 3.8 Panther Engine Version Alpha 1"; // Has to be in Initialize.
             // Setup lighting.
             Core.ScreenHeight = (uint)_graphics.PreferredBackBufferHeight;
             Core.ScreenWidth = (uint)_graphics.PreferredBackBufferWidth;

@@ -99,12 +99,12 @@ namespace MonoGame38Test
             _cubeSub.AddAsChildOf(_cube);
             _cubeSub.PO.Position.X = 6.15f;
             _cubeSub.PO.RotationVelocity.Y = 1.25f;
-            _cubeSub.TheScale = new Vector3(0.5f);
+            _cubeSub.Scale = 0.5f;
             _cubeSub.DiffuseColor = new Vector3(0.4f, 0, 0.95f);
             _cubeSubSub.AddAsChildOf(_cubeSub);
             _cubeSubSub.PO.Position.X = 3.25f;
             _cubeSubSub.PO.RotationVelocity.X = 1.5f;
-            _cubeSubSub.TheScale = new Vector3(0.25f);
+            _cubeSubSub.Scale = 0.25f;
             _cubeSubSub.DiffuseColor = new Vector3(0.2f, 0, 0.6f);
 
             _score.Number = 125027849061203;
