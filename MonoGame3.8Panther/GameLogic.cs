@@ -97,12 +97,12 @@ namespace MonoGame38Test
             _cube.PO.Position.X = -15;
             _cube.DiffuseColor = new Vector3(0.3f, 0, 0.85f);
             _cubeSub.AddAsChildOf(_cube);
-            _cubeSub.PO.Position.X = 6.15f;
+            _cubeSub.PO.Position = new Vector3(6.15f, 0, 0);
             _cubeSub.PO.RotationVelocity.Y = 1.25f;
             _cubeSub.Scale = 0.5f;
             _cubeSub.DiffuseColor = new Vector3(0.4f, 0, 0.95f);
             _cubeSubSub.AddAsChildOf(_cubeSub);
-            _cubeSubSub.PO.Position.X = 3.25f;
+            _cubeSubSub.PO.Position = new Vector3(3.25f, 0, 0);
             _cubeSubSub.PO.RotationVelocity.X = 1.5f;
             _cubeSubSub.Scale = 0.25f;
             _cubeSubSub.DiffuseColor = new Vector3(0.2f, 0, 0.6f);
@@ -117,9 +117,12 @@ namespace MonoGame38Test
 
             foreach(ShapeGenerater cube in _cubes)
             {
-                cube.Position = new Vector3(Core.RandomMinMax(-250, 250), Core.RandomMinMax(-190, 190), Core.RandomMinMax(-350, -550));
-                cube.PO.RotationVelocity = new Vector3(Core.RandomMinMax(-2, 2), Core.RandomMinMax(-2, 2), Core.RandomMinMax(-2, 2));
-                cube.DiffuseColor = new Vector3(Core.RandomMinMax(0.05f, 0.95f), Core.RandomMinMax(0.05f, 0.95f), Core.RandomMinMax(0.05f, 0.95f));
+                cube.Position = new Vector3(Core.RandomMinMax(-250, 250),
+                    Core.RandomMinMax(-190, 190), Core.RandomMinMax(-350, -550));
+                cube.PO.RotationVelocity = new Vector3(Core.RandomMinMax(-2, 2),
+                    Core.RandomMinMax(-2, 2), Core.RandomMinMax(-2, 2));
+                cube.DiffuseColor = new Vector3(Core.RandomMinMax(0.05f, 0.95f),
+                    Core.RandomMinMax(0.05f, 0.95f), Core.RandomMinMax(0.05f, 0.95f));
             }
 
             player.RotationVelocity = new Vector3(0.5f, 0.1f, 0.25f);

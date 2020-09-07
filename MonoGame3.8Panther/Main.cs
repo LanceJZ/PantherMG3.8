@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Panther;
+using System;
 
 namespace MonoGame38Test
 {
@@ -15,24 +16,27 @@ namespace MonoGame38Test
 
         Timer _FPSTimer;
         Timer _FPSDesplayTimer;
+        TimeSpan elapsedTime = TimeSpan.Zero;
         float _FPSFrames = 0;
         float _FPSTotal = 0;
         float _FPSCount = 0;
+        float frameRate = 0;
+        float frameCounter = 0;
 
         public Main()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.IsFullScreen = false;
-            _graphics.SynchronizeWithVerticalRetrace = true; //When true, 60FPS refresh rate locked.
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.PreferMultiSampling = true;
-            _graphics.PreparingDeviceSettings += SetMultiSampling;
             _graphics.ApplyChanges();
+            _graphics.PreparingDeviceSettings += SetMultiSampling;
             _graphics.GraphicsDevice.RasterizerState = new RasterizerState(); //Must be after Apply Changes.
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 960;
+            _graphics.SynchronizeWithVerticalRetrace = false; //When true, 60FPS refresh rate locked.
             _graphics.ApplyChanges();
-            IsFixedTimeStep = true;
+            //IsFixedTimeStep = true;//When true, 60FPS refresh rate locked.
             Content.RootDirectory = "Content";
             // Positive Y is Up. Positive X is Right.
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -51,6 +55,7 @@ namespace MonoGame38Test
             _FPSTimer = new Timer(this, 1);
             _FPSDesplayTimer = new Timer(this, 30);
             _game = new GameLogic(this, _camera);
+            IsFixedTimeStep = false;
         }
 
         private void SetMultiSampling(object sender, PreparingDeviceSettingsEventArgs eventArgs)
@@ -129,7 +134,17 @@ namespace MonoGame38Test
 
             Core.UpdateKeys();
 
+            elapsedTime += gameTime.ElapsedGameTime;
+
             _FPSFrames++;
+
+            if (elapsedTime > TimeSpan.FromSeconds(1))
+            {
+                elapsedTime -= TimeSpan.FromSeconds(1);
+                frameRate = frameCounter;
+                frameCounter = 0;
+            }
+
 
             if (_FPSTimer.Elapsed)
             {
@@ -143,6 +158,8 @@ namespace MonoGame38Test
                     _FPSDesplayTimer.Reset();
                     System.Diagnostics.Debug.WriteLine("FPS " + _FPSFrames.ToString() + " Average " +
                         average.ToString());
+
+                    System.Diagnostics.Debug.WriteLine("Real FPS " + frameRate);
                 }
 
                 _FPSFrames = 0;
@@ -155,6 +172,8 @@ namespace MonoGame38Test
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            frameCounter++;
+
             GraphicsDevice.Clear(new Color(0.05f, 0, 0.1f));
             base.Draw(gameTime);
             _game.Draw();
