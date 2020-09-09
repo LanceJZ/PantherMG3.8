@@ -311,22 +311,34 @@ namespace Panther
             return angle;
         }
         /// <summary>
+        /// Adds child that is not active dependent and directly connected.
+        /// </summary>
+        /// <param name="parrent">The Parent to this class.</param>
+        public virtual void AddAsChildOf(PositionedObject parrent)
+        {
+            AddAsChildOf(parrent, false, false, false, false);
+        }
+        /// <summary>
         /// Adds child that is directly connect.
         /// </summary>
         /// <param name="parrent">The parent to this class.</param>
         /// <param name="activeDependent">If this class is active when the parent is.</param>
         public virtual void AddAsChildOf(PositionedObject parrent, bool activeDependent)
         {
-            AddAsChildOf(parrent, activeDependent, true, true);
+            AddAsChildOf(parrent, activeDependent, false, false, false);
         }
         /// <summary>
-        /// Adds child that is not active dependent and directly connected.
+        /// Adds a child that is not child updated or rotation dependent.
         /// </summary>
-        /// <param name="parrent">The Parent to this class.</param>
-        public virtual void AddAsChildOf(PositionedObject parrent)
+        /// <param name="parrent">The parent to this class.</param>
+        /// <param name="activeDependent">If this class is active when the parent is.</param>
+        /// <param name="directConnection">If it is staying at child 0, 0, 0</param>
+        public virtual void AddAsChildOf(PositionedObject parrent, bool activeDependent,
+            bool directConnection)
         {
-            AddAsChildOf(parrent, false, true, true);
+            AddAsChildOf(parrent, activeDependent, directConnection, false, false);
         }
+
         /// <summary>
         /// Add PO class or base PO class from AModel or Sprite as child of this class.
         /// Make sure all the parents of the parent are added before the children.
@@ -335,7 +347,7 @@ namespace Panther
         /// <param name="activeDependent">If this class is active when the parent is.</param>
         /// <param name="directConnection">Bind Position and Rotation to child.</param>
         public virtual void AddAsChildOf(PositionedObject parent, bool activeDependent,
-            bool directConnection, bool rotationDependent)
+            bool directConnection, bool rotationDependent, bool childUpdate)
         {
             if (ParentPO != null)
                 return;
@@ -344,7 +356,7 @@ namespace Panther
             DirectConnection = directConnection;
             RotationDependent = rotationDependent;
             Child = true;
-            ChildUpdate = true;
+            ChildUpdate = childUpdate;
 
             ParentPO = parent;
             ParentPO.Parent = true;

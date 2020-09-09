@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
+using System.Diagnostics;
 #endregion
 
 namespace Panther
@@ -19,9 +20,13 @@ namespace Panther
         VertexBuffer vertexBuffer;
         RasterizerState rasterizerState;
         short[] lineListIndices;
-        public float Alpha = 1;
+        Color color = Color.White;
+        float modelScale = 1;
+        float Alpha = 1;
 
         public Vector3[] VertexArray { get => vertexArray; }
+        public Color Color { get => color; set => color = value; }
+        public float ModelScale { get => modelScale; set => modelScale = value; }
 
         public VectorModel (Game game, Camera camera): base(game, camera)
         {
@@ -51,6 +56,12 @@ namespace Panther
         {
             base.Draw(gameTime);
 
+            if (Effect == null)
+            {
+                Debug.WriteLine("Effect is null in " + this.ToString());
+                return;
+            }
+
             if (Enabled)
             {
                 foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
@@ -71,6 +82,12 @@ namespace Panther
 
         public void Transform()
         {
+            if (Effect == null)
+            {
+                Debug.WriteLine("Effect is null in " + this.ToString());
+                return;
+            }
+
             // Calculate the mesh transformation by combining translation, rotation, and scaling
             localMatrix = Matrix.CreateScale(Scale) *
                 Matrix.CreateFromYawPitchRoll(Rotation.X, Rotation.Y, Rotation.Z)
@@ -108,19 +125,66 @@ namespace Panther
             Transform();
         }
 
-        public float LoadVectorModel(string name, Color color)
+        public void AddAsChildOf(PositionedObject positionedObject)
         {
-            return InitializePoints(fileIO.ReadVectorModelFile(name), color);
+            PO.AddAsChildOf(positionedObject, false, false, true, true);
+        }
+
+        public void AddAsChildOf(PositionedObject positionedObject, bool directConnection)
+        {
+            PO.AddAsChildOf(positionedObject, false, false, directConnection, true);
+        }
+
+        public void AddAsChildOf(PositionedObject positionedObject, bool directConnection,
+            bool rotationDependent)
+        {
+            PO.AddAsChildOf(positionedObject, false, directConnection, rotationDependent, true);
         }
 
         public float LoadVectorModel(string name)
         {
-            return InitializePoints(fileIO.ReadVectorModelFile(name), Color.White);
+            return InitializePoints(fileIO.ReadVectorModelFile(name), color, modelScale);
+        }
+
+        public float LoadVectorModel(string name, float scale)
+        {
+            return InitializePoints(fileIO.ReadVectorModelFile(name), color, scale);
+        }
+
+        public float LoadVectorModel(string name, Color color)
+        {
+            return InitializePoints(fileIO.ReadVectorModelFile(name), color, modelScale);
+        }
+
+        public float LoadVectorModel(string name, Color color, float scale)
+        {
+            return InitializePoints(fileIO.ReadVectorModelFile(name), color, scale);
+        }
+
+        public float InitializePoints(Vector3[] pointPositions)
+        {
+            return InitializePoints(pointPositions, color, modelScale);
         }
 
         public float InitializePoints(Vector3[] pointPositions, Color color)
         {
+            return InitializePoints(pointPositions, color, modelScale);
+        }
+
+        public float InitializePoints(Vector3[] pointPositions, Color color, float scale)
+        {
             vertexArray = pointPositions;
+            this.color = color;
+
+            if (scale != 1)
+            {
+                Vector3[] oldScale = pointPositions;
+
+                for (int i = 0; i < pointPositions.Count(); i++)
+                {
+                    pointPositions[i] = oldScale[i] * scale;
+                }
+            }
 
             if (pointPositions != null)
             {
@@ -158,7 +222,7 @@ namespace Panther
                     PO.Radius = Math.Abs(pointPositions[i].Y);
             }
 
-            return PO.Radius;
+            return PO.Radius * scale;
         }
         /// <summary>
         /// Initializes the effect (loading, parameter setting, and technique selection)

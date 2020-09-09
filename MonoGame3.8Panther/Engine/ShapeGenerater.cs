@@ -123,7 +123,7 @@ namespace Panther
         public void AddAsChildOf(ShapeGenerater parent, bool activeDepedent)
         {
             parent._children.Add(this);
-            _PO.AddAsChildOf(parent._PO, activeDepedent, false, false);
+            _PO.AddAsChildOf(parent._PO, activeDepedent);
         }
     }
 }
