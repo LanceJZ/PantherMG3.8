@@ -14,6 +14,7 @@ namespace Panther
     {
         Camera theCamera;
         FileIO fileIO;
+        List<VectorModel> _children = new List<VectorModel>();
         Matrix localMatrix;
         VertexPositionColor[] pointList;
         Vector3[] vertexArray;
@@ -48,22 +49,52 @@ namespace Panther
             if (Enabled)
             {
                 base.Update(gameTime);
-                Transform();
+
+                if (Moveable)
+                {
+                    UpdateMatrix();
+                }
             }
+        }
+
+        public void UpdateMatrix()
+        {
+            if (_effect == null)
+            {
+                Debug.WriteLine("Effect is null in VectorModel");
+                return;
+            }
+
+            _effect.Projection = _camera.Projection;
+            _effect.View = _camera.View;
+            _effect.DiffuseColor = _diffuseColor;
+            _effect.EmissiveColor = _emissiveColor;
+            _effect.Alpha = Alpha;
+            _world = Matrix.CreateScale(Scale) * RotateMatrix(Rotation) * Matrix.CreateTranslation(Position);
+
+            if (_PO.Child)
+            {
+                foreach (PositionedObject po in _PO.ParentPOs)
+                {
+                    _world *= RotateMatrix(po.Rotation) * Matrix.CreateTranslation(po.Position);
+                }
+            }
+
+            _effect.World = _world;
         }
 
         public override void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
-
-            if (Effect == null)
+            if (Enabled && Visible)
             {
-                Debug.WriteLine("Effect is null in " + this.ToString());
-                return;
-            }
+                base.Draw(gameTime);
 
-            if (Enabled)
-            {
+                if (Effect == null)
+                {
+                    Debug.WriteLine("Effect is null in " + this.ToString());
+                    return;
+                }
+
                 foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
@@ -80,65 +111,45 @@ namespace Panther
             }
         }
 
-        public void Transform()
-        {
-            if (Effect == null)
-            {
-                Debug.WriteLine("Effect is null in " + this.ToString());
-                return;
-            }
-
-            // Calculate the mesh transformation by combining translation, rotation, and scaling
-            localMatrix = Matrix.CreateScale(Scale) *
-                Matrix.CreateFromYawPitchRoll(Rotation.X, Rotation.Y, Rotation.Z)
-                * Matrix.CreateTranslation(Position);
-            // Apply to Effect
-            Effect.World = localMatrix;
-            Effect.View = _camera.View;
-            Effect.Projection = _camera.Projection;
-            Effect.EmissiveColor = EmissiveColor;
-            Effect.DiffuseColor = DiffuseColor;
-            Effect.Alpha = Alpha;
-        }
-
         public override void Spawn(Vector3 position)
         {
             base.Spawn(position);
-            Transform();
+            UpdateMatrix();
         }
 
         public override void Spawn(Vector3 position, Vector3 velocity)
         {
             base.Spawn(position, velocity);
-            Transform();
+            UpdateMatrix();
         }
 
         public override void Spawn(Vector3 position, Vector3 rotation, Vector3 velocity)
         {
             base.Spawn(position, rotation, velocity);
-            Transform();
+            UpdateMatrix();
         }
 
         public override void Spawn(Vector3 position, Vector3 rotation, Vector3 rotationVelocity, Vector3 velocity)
         {
             base.Spawn(position, rotation, rotationVelocity, velocity);
-            Transform();
+            UpdateMatrix();
         }
 
-        public void AddAsChildOf(PositionedObject positionedObject)
+        public void AddAsChildOf(VectorModel parent)
         {
-            PO.AddAsChildOf(positionedObject, false, false, true, true);
+            _PO.AddAsChildOf(parent.PO, true, false, true, false);
         }
 
-        public void AddAsChildOf(PositionedObject positionedObject, bool directConnection)
+        public void AddAsChildOf(VectorModel parent, bool directConnection)
         {
-            PO.AddAsChildOf(positionedObject, false, false, directConnection, true);
+            PO.AddAsChildOf(parent.PO, true, directConnection, true, false);
         }
 
-        public void AddAsChildOf(PositionedObject positionedObject, bool directConnection,
+        public void AddAsChildOf(VectorModel parent, bool directConnection,
             bool rotationDependent)
         {
-            PO.AddAsChildOf(positionedObject, false, directConnection, rotationDependent, true);
+            parent._children.Add(this);
+            PO.AddAsChildOf(parent.PO, true, directConnection, rotationDependent, false);
         }
 
         public float LoadVectorModel(string name)
@@ -210,7 +221,7 @@ namespace Panther
                 vertexBuffer.SetData<VertexPositionColor>(pointList);
                 InitializeLineList();
                 InitializeEffect();
-                Transform();
+                UpdateMatrix();
             }
 
             for (int i = 0; i < pointPositions.Length; i++)
@@ -230,12 +241,12 @@ namespace Panther
         /// </summary>
         public void InitializeEffect()
         {
-            Effect = new BasicEffect(Core.Graphics);
-            Effect.VertexColorEnabled = true;
-            Effect.TextureEnabled = false;
-            Effect.View = theCamera.View;
-            Effect.Projection = theCamera.Projection;
-            Effect.World = localMatrix;
+            _effect = new BasicEffect(Core.Graphics);
+            _effect.VertexColorEnabled = true;
+            _effect.TextureEnabled = false;
+            _effect.View = theCamera.View;
+            _effect.Projection = theCamera.Projection;
+            _effect.World = localMatrix;
         }
         public void Destroy()
         {

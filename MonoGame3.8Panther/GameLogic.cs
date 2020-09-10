@@ -30,6 +30,7 @@ namespace MonoGame38Test
         ModelEntity _box;
         PlayerShip player;
         RockOne rockOne;
+        RockOne rockTwo;
         VectorModel cross;
         SpriteFont hyper20Font;
 
@@ -61,7 +62,8 @@ namespace MonoGame38Test
 
             player = new PlayerShip(Game, _camera);
             rockOne = new RockOne(Game, _camera);
-            cross = new VectorModel(Game, camera);
+            rockTwo = new RockOne(Game, _camera);
+            cross = new VectorModel(Game, _camera);
 
             game.Components.Add(this);
         }
@@ -130,6 +132,10 @@ namespace MonoGame38Test
             //player.DiffuseColor = new Vector3(0.25f, 0.05f, 1.0f);
             rockOne.RotationVelocity = new Vector3(0, 0, -0.1f);
             rockOne.Position = new Vector3(15, 10, 0);
+            rockTwo.AddAsChildOf(rockOne);
+            rockTwo.RotationVelocity = new Vector3(0, 0, .25f);
+            rockTwo.Scale = 0.5f;
+            rockTwo.Position = new Vector3(2.5f, 2.5f, 0);
 
             cross.Enabled = false;
         }

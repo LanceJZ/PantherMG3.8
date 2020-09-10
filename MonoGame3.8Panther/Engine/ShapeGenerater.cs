@@ -81,7 +81,7 @@ namespace Panther
             _effect.EmissiveColor = _emissiveColor;
             _world = Matrix.CreateScale(Scale) * RotateMatrix(Rotation) * Matrix.CreateTranslation(Position);
 
-            if (_PO.Child)
+            if (_PO.Child) // Use this for VectorModel too. Should be in one 3Dspace class.
             {
                 foreach (PositionedObject po in _PO.ParentPOs)
                 {

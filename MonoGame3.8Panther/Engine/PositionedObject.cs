@@ -311,7 +311,7 @@ namespace Panther
             return angle;
         }
         /// <summary>
-        /// Adds child that is not active dependent and directly connected.
+        /// Adds child that is not active dependent and not directly connected.
         /// </summary>
         /// <param name="parrent">The Parent to this class.</param>
         public virtual void AddAsChildOf(PositionedObject parrent)

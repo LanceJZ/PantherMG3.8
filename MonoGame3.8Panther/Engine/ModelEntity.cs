@@ -216,7 +216,7 @@ namespace Panther
                 _model.Root.Transform = Matrix.CreateScale(Scale) *
                     RotateMatrix(Rotation) * Matrix.CreateTranslation(Position);
 
-                if (_PO.Child)
+                if (_PO.Child) // Use this for VectorModel too. Should be in one 3Dspace class.
                 {
                     foreach (PositionedObject po in _PO.ParentPOs)
                     {
