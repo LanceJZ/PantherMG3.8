@@ -44,17 +44,9 @@ namespace MonoGame38Test
 
             Core.Initialize(this, _graphics, _spriteBatch);
 
-            // Screen resolution is 1200 X 900.
-            // Y positive is Up.
-            // (X) positive is to the right when camera is at rotation zero.
-            // Z positive is towards the camera when at rotation zero.
-            // Rotation on object rotates CCW. Zero has front facing X positive. Pi/2 on Y faces Z negative.
-            _camera = new Camera(this, new Vector3(0, 0, 50), new Vector3(0, MathHelper.Pi, 0),
-                GraphicsDevice.Viewport.AspectRatio, 1f, 1000f);
-
             _FPSTimer = new Timer(this, 1);
             _FPSDesplayTimer = new Timer(this, 30);
-            _game = new GameLogic(this, _camera);
+            _game = new GameLogic(this);
             IsFixedTimeStep = false;
         }
 

@@ -174,7 +174,7 @@ namespace Panther
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("The Model was null for this Entity. " + this);
+                Core.DebugConsole("The Model was null for this Entity. " + this);
             }
 
         }
@@ -216,7 +216,7 @@ namespace Panther
                 _model.Root.Transform = Matrix.CreateScale(Scale) *
                     RotateMatrix(Rotation) * Matrix.CreateTranslation(Position);
 
-                if (_PO.Child) // Use this for VectorModel too. Should be in one 3Dspace class.
+                if (_PO.Child)
                 {
                     foreach (PositionedObject po in _PO.ParentPOs)
                     {
@@ -246,7 +246,7 @@ namespace Panther
 
             if (_camera == null)
             {
-                System.Diagnostics.Debug.WriteLine("The Camera is not setup (null) on the class. " + this);
+                Core.DebugConsole("The Camera is not setup (null) on the class. " + this);
                 return;
             }
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System;
 using Microsoft.Xna.Framework.Audio;
@@ -87,10 +89,10 @@ namespace Panther
                 if (File.Exists("Content/Models/" + modelFileName + ".xnb"))
                     return _game.Content.Load<Model>("Models/" + modelFileName);
 
-                System.Diagnostics.Debug.WriteLine("The Model File " + modelFileName + " was not found.");
+                DebugConsole("The Model File " + modelFileName + " was not found.");
             }
             else
-                System.Diagnostics.Debug.WriteLine("The Model File Name was empty");
+                DebugConsole("The Model File Name was empty");
 
             return null;
         }
@@ -107,17 +109,38 @@ namespace Panther
                     return _game.Content.Load<Texture2D>("Textures/" + textureFileName);
             }
 
-            System.Diagnostics.Debug.WriteLine("The Texture File " + textureFileName + " was not found.");
+            DebugConsole("The Texture File " + textureFileName + " was not found.");
             return null;
         }
 
-        public static SoundEffect LoadSound(string soundFileName)
+        public static SoundEffect LoadSoundEffect(string soundFileName)
         {
             if (soundFileName != "")
             {
                 if (File.Exists("Content/Sounds/" + soundFileName + ".xnb"))
                 {
                     return _game.Content.Load<SoundEffect>("Sounds/" + soundFileName);
+                }
+                else
+                {
+                    DebugConsole("The Sound File " + soundFileName + " was not found.");
+                }
+            }
+
+            return null;
+        }
+
+        public static SoundEffectInstance LoadSoundEffectInstance(string soundFileName)
+        {
+            if (soundFileName != "")
+            {
+                if (File.Exists("Content/Sounds/" + soundFileName + ".xnb"))
+                {
+                    return _game.Content.Load<SoundEffect>("Sounds/" + soundFileName).CreateInstance();
+                }
+                else
+                {
+                    DebugConsole("The Texture File " + soundFileName + " was not found.");
                 }
             }
 
@@ -417,7 +440,6 @@ namespace Panther
 
             return position;
         }
-        #endregion
         /// <summary>
         /// Circle collusion detection. Target circle will be compared to this class's.
         /// Will return true of they intersect. Only for use with 2D Z plane.
@@ -511,15 +533,20 @@ namespace Panther
 
         public static float RandomRadian()
         {
-            return Core.RandomMinMax(0, MathHelper.TwoPi);
+            return RandomMinMax(0, MathHelper.TwoPi);
         }
 
         public static Vector3 RandomVelocity(float speed)
         {
             float ang = RandomRadian();
-            float amt = Core.RandomMinMax(speed * 0.15f, speed);
+            float amt = RandomMinMax(speed * 0.15f, speed);
             return VelocityFromAngleZ(ang, amt);
         }
 
+        public static void DebugConsole(string text)
+        {
+            DebugConsole(text);
+        }
+#endregion
     }
 }

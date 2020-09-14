@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
-using System;
 
 namespace Panther
 {
@@ -240,19 +235,11 @@ namespace Panther
             else
             {
                 //Debug file not found.
-                System.Diagnostics.Debug.WriteLine("File " + fileName + " not found.");
-                vertRead.Add(Vector3.Zero);
-                vertRead.Add(Vector3.Zero);
+                Core.DebugConsole("File " + fileName + " not found.");
+                Core.TheGame.Exit();
             }
 
-            Vector3[] verts = new Vector3[vertRead.Count];
-
-            for (int i = 0; i < vertRead.Count; i++)
-            {
-                verts[i] = vertRead[i];
-            }
-
-            return verts;
+            return vertRead.ToArray();
         }
 
         public void Close()

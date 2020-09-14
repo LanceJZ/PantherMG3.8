@@ -61,7 +61,7 @@ namespace Panther
         {
             if (_effect == null)
             {
-                Debug.WriteLine("Effect is null in VectorModel");
+                Core.DebugConsole("Effect is null in VectorModel");
                 return;
             }
 
@@ -76,7 +76,10 @@ namespace Panther
             {
                 foreach (PositionedObject po in _PO.ParentPOs)
                 {
-                    _world *= RotateMatrix(po.Rotation) * Matrix.CreateTranslation(po.Position);
+                    if (!_PO.DirectConnection)
+                    {
+                        _world *= RotateMatrix(po.Rotation) * Matrix.CreateTranslation(po.Position);
+                    }
                 }
             }
 
@@ -91,7 +94,7 @@ namespace Panther
 
                 if (Effect == null)
                 {
-                    Debug.WriteLine("Effect is null in " + this.ToString());
+                    Core.DebugConsole("Effect is null in " + this.ToString());
                     return;
                 }
 

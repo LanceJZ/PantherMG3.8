@@ -31,6 +31,7 @@ namespace MonoGame38Test
         PlayerShip player;
         RockOne rockOne;
         RockOne rockTwo;
+        RockOne rockThree;
         VectorModel cross;
         SpriteFont hyper20Font;
 
@@ -38,31 +39,39 @@ namespace MonoGame38Test
 
         public GameState CurrentMode { get => _gameMode; }
 
-        public GameLogic(Game game, Camera camera) : base(game)
+        public GameLogic(Game game) : base(game)
         {
+            // Screen resolution is 1200 X 900.
+            // Y positive is Up.
+            // (X) positive is to the right when camera is at rotation zero.
+            // Z positive is towards the camera when at rotation zero.
+            // Rotation on object rotates CCW. Zero has front facing X positive. Pi/2 on Y faces Z negative.
+            _camera = new Camera(game, new Vector3(0, 0, 50), new Vector3(0, MathHelper.Pi, 0),
+                Core.Graphics.Viewport.AspectRatio, 1f, 1000f);
+
             VertexPositionNormalTexture[] genMLine = GeneratedText.MiddleLine(2.0f);
 
-            _camera = camera;
             int cubePrims = 12;
             VertexPositionNormalTexture[] genCube = GeneratedShapes.Cube();
-            _box = new ModelEntity(game, camera, "Core/Cube");
+            _box = new ModelEntity(game, _camera, "Core/Cube");
             _cubes = new List<ShapeGenerater>();
-            _cube = new ShapeGenerater(game, camera, genCube, cubePrims);
-            _cubeSub = new ShapeGenerater(game, camera, genCube, cubePrims);
-            _cubeSubSub = new ShapeGenerater(game, camera, genCube, cubePrims);
+            _cube = new ShapeGenerater(game, _camera, genCube, cubePrims);
+            _cubeSub = new ShapeGenerater(game, _camera, genCube, cubePrims);
+            _cubeSubSub = new ShapeGenerater(game, _camera, genCube, cubePrims);
 
-            _text = new TextGrid(game, camera, 0.10f, Vector3.One);
+            _text = new TextGrid(game, _camera, 0.10f, Vector3.One);
 
             _score = new NumberGenerator(game);
 
             for (int i = 0; i < 1000; i++)
             {
-                _cubes.Add(new ShapeGenerater(Game, camera, genCube, cubePrims));
+                _cubes.Add(new ShapeGenerater(Game, _camera, genCube, cubePrims));
             }
 
             player = new PlayerShip(Game, _camera);
             rockOne = new RockOne(Game, _camera);
             rockTwo = new RockOne(Game, _camera);
+            rockThree = new RockOne(Game, _camera);
             cross = new VectorModel(Game, _camera);
 
             game.Components.Add(this);
@@ -131,11 +140,14 @@ namespace MonoGame38Test
             player.Position = new Vector3(20, 0, 0);
             //player.DiffuseColor = new Vector3(0.25f, 0.05f, 1.0f);
             rockOne.RotationVelocity = new Vector3(0, 0, -0.1f);
-            rockOne.Position = new Vector3(15, 10, 0);
+            rockOne.Position = new Vector3(10, 8, 0);
             rockTwo.AddAsChildOf(rockOne);
             rockTwo.RotationVelocity = new Vector3(0, 0, .25f);
             rockTwo.Scale = 0.5f;
-            rockTwo.Position = new Vector3(2.5f, 2.5f, 0);
+            rockTwo.Position = new Vector3(6.5f, 6.5f, 0);
+            rockThree.AddAsChildOf(rockTwo);
+            rockThree.Scale = 0.25f;
+            rockThree.Position = new Vector3(2.25f, 2.25f, 0);
 
             cross.Enabled = false;
         }
