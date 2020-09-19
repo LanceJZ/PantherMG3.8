@@ -18,9 +18,10 @@ namespace Panther
         VertexPositionColor[] pointList;
         Vector3[] vertexArray;
         VertexBuffer vertexBuffer;
+        IndexBuffer indexBuffer;
         RasterizerState rasterizerState;
         string name;
-        short[] lineListIndices;
+        short[] lineIndices;
         Color color = Color.White;
         float modelScale = 1;
         float Alpha = 1;
@@ -87,7 +88,7 @@ namespace Panther
             _effect.World = _world;
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime) //Change Model Entity too.
         {
             if (Enabled && Visible)
             {
@@ -99,19 +100,21 @@ namespace Panther
                     return;
                 }
 
+                Core.GraphicsDM.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+                Core.GraphicsDM.GraphicsDevice.Indices = indexBuffer;
+
                 foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                }
 
-                Core.GraphicsDM.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(
-                    PrimitiveType.LineList, pointList, //Type, Vertex array for vertices.
-                    0,  // Vertex buffer offset to add to each element of the index buffer.
-                    pointList.Length,  // Number of vertices in pointList.
-                    lineListIndices,  // The index buffer.
-                    0,  // First index element to read.
-                    pointList.Length - 1   // Number of primitives to draw.
-                );
+                    Core.GraphicsDM.GraphicsDevice.DrawIndexedPrimitives
+                        (
+                        PrimitiveType.LineList,
+                        0,
+                        0,
+                        pointList.Length
+                        );
+                }
             }
         }
 
@@ -242,7 +245,8 @@ namespace Panther
                     pointPositions.Length, BufferUsage.None);
 
                 // Set the vertex buffer data to the array of vertices.
-                vertexBuffer.SetData<VertexPositionColor>(pointList);
+                vertexBuffer.SetData(pointList);
+
                 InitializeLineList();
                 InitializeEffect();
                 UpdateMatrix();
@@ -263,6 +267,24 @@ namespace Panther
         /// Initializes the effect (loading, parameter setting, and technique selection)
         /// used by the game. Moved to Services.
         /// </summary>
+        public void CleanIniciesAndDraw()
+        {
+            foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+            }
+
+            Core.GraphicsDM.GraphicsDevice.DrawUserIndexedPrimitives
+                (
+                    PrimitiveType.LineList, pointList, //Type, Vertex array for vertices.
+                    0,  // Vertex buffer offset to add to each element of the index buffer.
+                    pointList.Length,  // Number of vertices in pointList.
+                    lineIndices,  // The index buffer.
+                    0,  // First index element to read.
+                    pointList.Length - 1   // Number of primitives to draw.
+                );
+        }
+
         public void InitializeEffect()
         {
             _effect = new BasicEffect(Core.Graphics);
@@ -282,14 +304,18 @@ namespace Panther
         void InitializeLineList()
         {
             // Initialize an array of indices of type short.
-            lineListIndices = new short[(pointList.Length * 2) - 2];
+            lineIndices = new short[(pointList.Length * 2) - 2];
 
             // Populate the array with references to indices in the vertex buffer
             for (int i = 0; i < pointList.Length - 1; i++)
             {
-                lineListIndices[i * 2] = (short)(i);
-                lineListIndices[(i * 2) + 1] = (short)(i + 1);
+                lineIndices[i * 2] = (short)(i);
+                lineIndices[(i * 2) + 1] = (short)(i + 1);
             }
+
+            indexBuffer = new IndexBuffer(Core.GraphicsDM.GraphicsDevice, typeof(short),
+                lineIndices.Length, BufferUsage.WriteOnly);
+            indexBuffer.SetData(lineIndices);
         }
         #endregion
     }
