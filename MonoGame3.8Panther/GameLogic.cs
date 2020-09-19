@@ -89,7 +89,7 @@ namespace MonoGame38Test
             float crossSize = 0.5f;
             Vector3[] crossVertex = { new Vector3(crossSize, 0, 0), new Vector3(-crossSize, 0, 0),
                 new Vector3(0, crossSize, 0), new Vector3(0, -crossSize, 0) };
-            cross.InitializePoints(crossVertex, Color.White);
+            cross.InitializePoints(crossVertex, Color.White, "Cross");
         }
 
         public void LoadContent()

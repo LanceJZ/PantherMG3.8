@@ -1,10 +1,8 @@
 ﻿#region Using
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using System.Security.Cryptography.X509Certificates;
 #endregion
 
 namespace Panther

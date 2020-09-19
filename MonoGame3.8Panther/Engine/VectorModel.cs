@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
-using System.Diagnostics;
 #endregion
 
 namespace Panther
@@ -20,6 +19,7 @@ namespace Panther
         Vector3[] vertexArray;
         VertexBuffer vertexBuffer;
         RasterizerState rasterizerState;
+        string name;
         short[] lineListIndices;
         Color color = Color.White;
         float modelScale = 1;
@@ -28,6 +28,7 @@ namespace Panther
         public Vector3[] VertexArray { get => vertexArray; }
         public Color Color { get => color; set => color = value; }
         public float ModelScale { get => modelScale; set => modelScale = value; }
+        public string Name { get => name; set => name = value; }
 
         public VectorModel (Game game, Camera camera): base(game, camera)
         {
@@ -61,7 +62,7 @@ namespace Panther
         {
             if (_effect == null)
             {
-                Core.DebugConsole("Effect is null in VectorModel");
+                Core.DebugConsole("Effect is null in VectorModel " + name);
                 return;
             }
 
@@ -94,7 +95,7 @@ namespace Panther
 
                 if (Effect == null)
                 {
-                    Core.DebugConsole("Effect is null in " + this.ToString());
+                    Core.DebugConsole("Effect is null in " + name);
                     return;
                 }
 
@@ -155,38 +156,58 @@ namespace Panther
             PO.AddAsChildOf(parent.PO, true, directConnection, rotationDependent, false);
         }
 
-        public float LoadVectorModel(string name)
+        public float LoadVectorModel(string fileName)
         {
-            return InitializePoints(fileIO.ReadVectorModelFile(name), color, modelScale);
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, modelScale, fileName);
+        }
+        public float LoadVectorModel(string fileName, string name)
+        {
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, modelScale, name);
         }
 
-        public float LoadVectorModel(string name, float scale)
+        public float LoadVectorModel(string fileName, float scale)
         {
-            return InitializePoints(fileIO.ReadVectorModelFile(name), color, scale);
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, scale, fileName);
         }
 
-        public float LoadVectorModel(string name, Color color)
+        public float LoadVectorModel(string fileName, string name, float scale)
         {
-            return InitializePoints(fileIO.ReadVectorModelFile(name), color, modelScale);
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, scale, name);
         }
 
-        public float LoadVectorModel(string name, Color color, float scale)
+        public float LoadVectorModel(string fileName, Color color)
         {
-            return InitializePoints(fileIO.ReadVectorModelFile(name), color, scale);
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, modelScale, fileName);
         }
 
-        public float InitializePoints(Vector3[] pointPositions)
+        public float LoadVectorModel(string fileName, string name, Color color)
         {
-            return InitializePoints(pointPositions, color, modelScale);
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, modelScale, fileName);
         }
 
-        public float InitializePoints(Vector3[] pointPositions, Color color)
+        public float LoadVectorModel(string fileName, Color color, float scale)
         {
-            return InitializePoints(pointPositions, color, modelScale);
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, scale, fileName);
         }
 
-        public float InitializePoints(Vector3[] pointPositions, Color color, float scale)
+        public float LoadVectorModel(string fileName, string name, Color color, float scale)
         {
+            return InitializePoints(fileIO.ReadVectorModelFile(fileName), color, scale, name);
+        }
+
+        public float InitializePoints(Vector3[] pointPositions, string name)
+        {
+            return InitializePoints(pointPositions, color, modelScale, name);
+        }
+
+        public float InitializePoints(Vector3[] pointPositions, Color color, string name)
+        {
+            return InitializePoints(pointPositions, color, modelScale, name);
+        }
+
+        public float InitializePoints(Vector3[] pointPositions, Color color, float scale, string name)
+        {
+            this.name = name;
             vertexArray = pointPositions;
             this.color = color;
 
